@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - v*
+  workflow_dispatch:
 
 jobs:
   build:
@@ -47,6 +48,11 @@ jobs:
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ github.ref }}
+          name: v${{ github.ref }}
+          body: TODO New Release.
+          draft: true
+          prerelease: false
           files: |
             go-proxy-bingai-linux-amd64.tar.gz
             go-proxy-bingai-linux-arm64.tar.gz
