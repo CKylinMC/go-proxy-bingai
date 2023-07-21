@@ -3,11 +3,11 @@ on:
   push:
     tags:
       - v*
+  workflow_dispatch:
 
 jobs:
   build:
     name: build
-    needs: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -44,7 +44,7 @@ jobs:
           tag_name: ${{ github.ref }}
           name: v${{ github.ref }}
           body: TODO New Release.
-          draft: false
+          draft: true
           prerelease: false
           files: |
             go-proxy-bingai-linux-amd64.tar.gz
