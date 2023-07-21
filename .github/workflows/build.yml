@@ -60,4 +60,13 @@ jobs:
             go-proxy-bingai-windows-arm64.tar.gz
             go-proxy-bingai-darwin-amd64.tar.gz
             go-proxy-bingai-darwin-arm64.tar.gz
+      - uses: ckylinmc/minio-upload-action@v1.2
+        name: Upload to private storage
+        with:
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
+          accesskey: ${{secrets.AWS_ACCESS_KEY_ID}}
+          secretkey: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          bucketname: ${{ secrets.AWS_S3_BUCKET }}
+          source: './go-proxy-bingai-linux-amd64.tar.gz'
+          dest: '/go-proxy-bingai/go-proxy-bingai-linux-amd64.tar.gz'
   
