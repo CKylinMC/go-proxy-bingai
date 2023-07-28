@@ -28,15 +28,15 @@ jobs:
           npm run build
           cd ..
 
-      - name: Commit latest webFile
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.email "action@ckyl.me"
-          git config --global user.name "Git Action"
-          git add web/*
-          git commit -m "[Upgrade] 🚀 Upload latest webFile"
-          git push origin HEAD:master
+      # - name: Commit latest webFile
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     git config --global user.email "action@ckyl.me"
+      #     git config --global user.name "Git Action"
+      #     git add web/*
+      #     git commit -m "[Upgrade] 🚀 Upload latest webFile"
+      #     git push origin HEAD:master
 
       - name: Build binary
         run: |
