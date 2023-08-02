@@ -11,8 +11,11 @@ export const useUserStore = defineStore(
   () => {
     const maxTryCreateConversationIdCount = 10;
     const userTokenCookieName = '_U';
+    const userKievRPSSecAuthCookieName = 'KievRPSSecAuth';
     const randIpCookieName = 'BingAI_Rand_IP';
     const authKeyCookieName = 'BingAI_Auth_Key';
+    const historyEnable = ref(true);
+    const themeMode = ref('auto');
 
     const sysConfig = ref<SysConfig>();
 
@@ -60,13 +63,23 @@ export const useUserStore = defineStore(
     };
 
     const checkUserToken = () => {
+      if (historyEnable.value) {
+        CIB.vm.sidePanel.isVisibleDesktop = true;
+        document.querySelector('cib-serp')?.setAttribute('alignment', 'left');
+        // 设置历史记录侧边栏的高度为 90vh
+        document.querySelector('cib-serp')?.shadowRoot?.querySelector('cib-side-panel')?.shadowRoot?.querySelector('div.scroller')?.setAttribute('style', 'height: 90vh');
+      } else {
+        CIB.vm.sidePanel.isVisibleDesktop = false;
+        document.querySelector('cib-serp')?.setAttribute('alignment', 'center');
+      }
       const token = getUserToken();
-      // if (!token) {
+      if (!token) {
         // 未登录不显示历史记录
         CIB.config.features.enableGetChats = false;
         CIB.vm.sidePanel.isVisibleMobile = false;
         CIB.vm.sidePanel.isVisibleDesktop = false;
-      // }
+        document.querySelector('cib-serp')?.setAttribute('alignment', 'center');
+      }
       // 创建会话id
       tryCreateConversationId();
     };
@@ -100,10 +113,20 @@ export const useUserStore = defineStore(
       }
     };
 
+    const getUserKievRPSSecAuth = () => {
+        const userCookieVal = cookies.get(userKievRPSSecAuthCookieName) || '';
+        return userCookieVal;
+    };
+
+    const saveUserKievRPSSecAuth = (token: string) => {
+        cookies.set(userKievRPSSecAuthCookieName, token, 7 * 24 * 60, '/');
+    };
+
     const resetCache = async () => {
       cookies.set(userTokenCookieName, '', -1);
       cookies.set(randIpCookieName, '', -1);
       cookies.set(authKeyCookieName, '', -1);
+      cookies.set(userKievRPSSecAuthCookieName, '', -1);
       await clearCache();
     };
 
@@ -115,13 +138,17 @@ export const useUserStore = defineStore(
       saveUserToken,
       resetCache,
       setAuthKey,
+      getUserKievRPSSecAuth,
+      saveUserKievRPSSecAuth,
+      historyEnable,
+      themeMode,
     };
   },
   {
     persist: {
       key: 'user-store',
       storage: localStorage,
-      paths: [],
+      paths: ['historyEnable', 'themeMode'],
     },
   }
 );
